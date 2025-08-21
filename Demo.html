@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cake with Butterflies</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #f9e4c8, #f8bfbf, #d88fa4);
+      overflow: hidden;
+      font-family: 'Segoe Script', cursive;
+    }
+
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+    }
+
+    /* Celebration Text */
+    .message {
+      position: absolute;
+      top: 40px;
+      width: 100%;
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Cake */
+    .cake {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 180px;
+    }
+
+    .cake-base {
+      width: 100%;
+      height: 120px;
+      background: linear-gradient(#f2c078, #e29a5e);
+      border-radius: 15px;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .cake-icing {
+      width: 100%;
+      height: 60px;
+      background: radial-gradient(circle at 30% 30%, #fff0f5, #f8a5c2);
+      border-radius: 50% 50% 15px 15px;
+      position: absolute;
+      top: -20px;
+      left: 0;
+      box-shadow: inset 0 -5px 8px rgba(0,0,0,0.1);
+    }
+
+    .candle {
+      width: 12px;
+      height: 50px;
+      background: repeating-linear-gradient(
+        45deg,
+        #fff,
+        #fff 5px,
+        #ff6f61 5px,
+        #ff6f61 10px
+      );
+      position: absolute;
+      top: -70px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 4px;
+    }
+
+    .flame {
+      width: 18px;
+      height: 28px;
+      background: radial-gradient(circle at 30% 30%, #ffeb3b, #ff9800, #e65100);
+      border-radius: 50%;
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 30px rgba(255, 174, 0, 0.7);
+    }
+
+    /* Butterflies */
+    .butterfly {
+      position: absolute;
+      width: 50px;
+      height: 40px;
+      pointer-events: none;
+    }
+
+    .wing {
+      width: 25px;
+      height: 40px;
+      background: radial-gradient(circle at center, #ffb6c1, #e91e63);
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      transform-origin: right center;
+    }
+
+    .wing.right {
+      right: 0;
+      background: radial-gradient(circle at center, #add8e6, #3f51b5);
+      transform-origin: left center;
+    }
+
+    .body {
+      width: 8px;
+      height: 40px;
+      background: #333;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="message">💖 Happy 1 year 5 months Rish, my Love 💖</div>
+
+    <!-- Cake -->
+    <div class="cake">
+      <div class="cake-icing"></div>
+      <div class="cake-base"></div>
+      <div class="candle">
+        <div class="flame"></div>
+      </div>
+    </div>
+
+    <!-- Butterflies -->
+    <div id="butterflies"></div>
+  </div>
+
+  <script>
+    // Create butterflies
+    const container = document.getElementById("butterflies");
+    for (let i = 0; i < 12; i++) {
+      let b = document.createElement("div");
+      b.classList.add("butterfly");
+      b.style.left = Math.random() * window.innerWidth + "px";
+      b.style.top = Math.random() * window.innerHeight + "px";
+
+      let leftWing = document.createElement("div");
+      leftWing.classList.add("wing", "left");
+
+      let rightWing = document.createElement("div");
+      rightWing.classList.add("wing", "right");
+
+      let body = document.createElement("div");
+      body.classList.add("body");
+
+      b.appendChild(leftWing);
+      b.appendChild(rightWing);
+      b.appendChild(body);
+      container.appendChild(b);
+
+      // Animate wings
+      gsap.to(leftWing, {
+        rotation: -30,
+        duration: 0.3,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+      });
+      gsap.to(rightWing, {
+        rotation: 30,
+        duration: 0.3,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut"
+      });
+    }
+
+    // Candle flame flicker
+    gsap.to(".flame", {
+      scale: 1.2,
+      duration: 0.3,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    });
+
+    // Make butterflies follow cursor
+    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+    window.addEventListener("mousemove", e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    document.querySelectorAll(".butterfly").forEach((butterfly, i) => {
+      gsap.to(butterfly, {
+        x: () => mouse.x - window.innerWidth / 2 + (Math.random() * 200 - 100),
+        y: () => mouse.y - window.innerHeight / 2 + (Math.random() * 200 - 100),
+        duration: 5,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        delay: i * 0.3
+      });
+    });
+  </script>
+</body>
+</html>
